@@ -2,7 +2,13 @@
 
 require 'bundler/setup'
 
-require_relative 'shell'
+require_relative 'core/shell'
 
 shell = Shell.new
-shell.execute 'git log'
+
+begin
+	puts shell.execute 'ls -l'
+rescue => error
+	puts "Error:"
+	puts error
+end
