@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 
 require 'bundler/setup'
-require "open4"
 
-pid, stdin, stdout, stderr = Open4::popen4 "git log" 
+require_relative 'shell'
 
-puts stdout.read.strip
+shell = Shell.new
+shell.execute 'git log'
