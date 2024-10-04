@@ -1,7 +1,6 @@
-require 'open4'
+require "open4"
 
 class Shell
-
   def exec(command)
     pid, stdin, stdout, stderr = Open4::popen4 command
 
@@ -13,5 +12,4 @@ class Shell
 
     stdout.read.strip
   end
-
 end

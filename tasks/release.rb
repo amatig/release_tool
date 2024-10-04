@@ -1,7 +1,6 @@
-require_relative '../core/shell'
+require_relative "../core/shell"
 
 class Release
-
   def list(path)
     begin
       shell = Shell.new
@@ -11,5 +10,4 @@ class Release
       puts error
     end
   end
-
 end
