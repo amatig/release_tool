@@ -9,8 +9,8 @@ class Release
   def list(path)
     begin
       list = @git.tags path
-      list = list.select { |tag| Common.isValidTag(tag) }
-      puts list.sort { |tagA, tagB| Common.compareVersions(tagA, tagB) }
+      list = list.select { |tag| Common.is_valid_tag(tag) }
+      puts list.sort { |tagA, tagB| Common.compare_versions(tagA, tagB) }
     rescue => error
       puts error
     end
