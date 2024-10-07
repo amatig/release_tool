@@ -5,11 +5,8 @@ class Shell
     pid, stdin, stdout, stderr = Open4::popen4 command
 
     error = stderr.read.strip
+    raise error if !error.empty?
 
-    if !error.empty?
-      fail error
-    end
-
-    stdout.read.strip
+    stdout.read.strip.split "\n"
   end
 end

@@ -1,11 +1,17 @@
-require_relative "../core/shell"
+require_relative "../core/git"
 
 class Release
+  def initialize
+    @git = Git.new
+  end
+
   def list(path)
     begin
-      shell = Shell.new
+      list = @git.tags path
 
-      puts shell.exec "ls -l #{path}"
+      list.each do |tag|
+        puts "--> #{tag}"
+      end
     rescue => error
       puts error
     end
