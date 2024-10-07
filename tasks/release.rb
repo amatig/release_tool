@@ -1,3 +1,4 @@
+require_relative "../core/config"
 require_relative "../core/git"
 
 class Release
@@ -8,10 +9,8 @@ class Release
   def list(path)
     begin
       list = @git.tags path
-
-      list.each do |tag|
-        puts "--> #{tag}"
-      end
+      list = list.select { |tag| Config.isValidTag(tag) }
+      puts list.sort { |tagA, tagB| Config.compareVersions(tagA, tagB) }
     rescue => error
       puts error
     end
