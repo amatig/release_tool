@@ -1,11 +1,17 @@
 class Common
+  @@tag_regex = /^GR(\d{2})\.(\d{1,2})\.(\d{1,2})$/
+
   def self.is_valid_tag(tag)
-    tag =~ /^GR\d{2}\.\d{1,2}\.\d{1,2}$/
+    begin
+      extract_version(tag) != nil
+    rescue
+      false
+    end
   end
 
   def self.extract_version(tag)
-    match = tag.match /^GR(\d{2})\.(\d{1,2})\.(\d{1,2})$/
-    raise "Issue with tag version format" if match.size < 4
+    match = tag.match @@tag_regex
+    raise "Issue with tag version format" if match == nil || match.size < 4
 
     return match[1].to_i, match[2].to_i, match[3].to_i
   end
