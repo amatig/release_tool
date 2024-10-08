@@ -20,3 +20,14 @@ class String
     extract_version <=> other_version.extract_version
   end
 end
+
+# Extension for pretty output
+class String
+  def pretty_row_separator(column_sizes, separator = "   ")
+    output = column_sizes.map do |size|
+      self * size
+    end
+
+    output.join(separator).strip
+  end
+end

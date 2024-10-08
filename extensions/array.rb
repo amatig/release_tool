@@ -1,9 +1,10 @@
+# Extension for pretty output
 class Array
   def pretty_row(column_sizes, separator = "   ")
-    rows = each_with_index.map do |str, index|
+    output = each_with_index.map do |str, index|
       str.ljust(column_sizes[index])
     end
 
-    rows.join(separator)
+    output.join(separator).strip
   end
 end
