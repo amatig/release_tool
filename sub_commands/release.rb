@@ -1,4 +1,5 @@
-require_relative "../core/common"
+require_relative "../extensions/string"
+require_relative "../extensions/array"
 require_relative "../core/git"
 
 class ReleaseSubcommand < Thor
@@ -12,13 +13,23 @@ class ReleaseSubcommand < Thor
       git = Git.new
 
       list = git.tags dir
-      list = list.select { |tag| Common.is_valid_tag(tag) }
-      list = list.sort { |tagA, tagB| Common.compare_versions(tagA, tagB) }
+      list = list.select { |tag| tag.is_valid_version }
+      list = list.sort { |tagA, tagB| tagA.compare_versions(tagB) }
       list = list.last options[:limit]
 
-      list.each do |tag|
+      list = list.map do |tag|
         commit, date = git.info(dir, tag)
-        puts tag + " | " + date
+        [tag, date]
+      end
+
+      # Output
+      column_sizes = [10, 32]
+
+      headers = ["Tag", "Date"]
+      puts headers.pretty_row(column_sizes)
+
+      list.each do |info|
+        puts info.pretty_row(column_sizes)
       end
     rescue => error
       puts error
