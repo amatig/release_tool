@@ -5,11 +5,11 @@ class Git
     @shell = Shell.new
   end
 
-  def tags(dir)
+  def tags(dir:)
     @shell.exec "git --git-dir=#{dir}/.git tag"
   end
 
-  def info(dir, tag)
+  def info(dir:, tag:)
     output = @shell.exec "git --git-dir=#{dir}/.git show #{tag} --quiet"
 
     commit_prefix = "commit"

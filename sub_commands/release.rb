@@ -12,12 +12,12 @@ class ReleaseSubcommand < Thor
       dir = options[:dir]
       git = Git.new
 
-      data = git.tags dir
+      data = git.tags(dir: dir)
       data = data.select { |tag| tag.is_valid_version }
       data = data.sort { |tag_a, tag_b| tag_a.compare_versions(tag_b) }
       data = data.last options[:limit]
       data = data.map do |tag|
-        commit, date = git.info(dir, tag)
+        commit, date = git.info(dir: dir, tag: tag)
         [tag, date]
       end
 

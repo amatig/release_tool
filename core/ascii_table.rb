@@ -43,7 +43,10 @@ class ASCIITable
   end
 
   def print_separator(column_widths)
-    separator = column_widths.map { |width| "-" * width }
+    separator = column_widths.map do |width|
+      "-" * width
+    end
+
     puts "+-#{separator.join("-+-")}-+"
   end
 end
