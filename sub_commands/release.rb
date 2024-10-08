@@ -1,5 +1,5 @@
 require_relative "../extensions/string"
-require_relative "../extensions/array"
+require_relative "../core/ascii_table"
 require_relative "../core/git"
 
 class ReleaseSubcommand < Thor
@@ -12,26 +12,18 @@ class ReleaseSubcommand < Thor
       dir = options[:dir]
       git = Git.new
 
-      list = git.tags dir
-      list = list.select { |tag| tag.is_valid_version }
-      list = list.sort { |tag_a, tag_b| tag_a.compare_versions(tag_b) }
-      list = list.last options[:limit]
-
-      list = list.map do |tag|
+      data = git.tags dir
+      data = data.select { |tag| tag.is_valid_version }
+      data = data.sort { |tag_a, tag_b| tag_a.compare_versions(tag_b) }
+      data = data.last options[:limit]
+      data = data.map do |tag|
         commit, date = git.info(dir, tag)
         [tag, date]
       end
 
       # Output
-      column_sizes = [10, 32]
-
-      headers = ["Tag", "Date"]
-      puts headers.pretty_row(column_sizes)
-      puts "-".pretty_row_separator(column_sizes)
-
-      list.each do |info|
-        puts info.pretty_row(column_sizes)
-      end
+      table = ASCIITable.new(data.unshift(["Tag", "Date"]), has_header: true)
+      table.print_table
     rescue => error
       puts error
     end
