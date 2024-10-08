@@ -19,4 +19,8 @@ class String
   def compare_versions(other_version)
     extract_version <=> other_version.extract_version
   end
+
+  def normalize_date
+    sub("+0000", "").strip
+  end
 end
