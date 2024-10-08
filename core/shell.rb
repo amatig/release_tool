@@ -1,8 +1,8 @@
-require "open4"
+require "open3"
 
 class Shell
   def exec(command)
-    pid, stdin, stdout, stderr = Open4::popen4 command
+    stdin, stdout, stderr, wait_thr = Open3.popen3 command
 
     error = stderr.read.strip
     raise error if !error.empty?

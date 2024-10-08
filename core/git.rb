@@ -5,7 +5,7 @@ class Git
     @shell = Shell.new
   end
 
-  def tags(path)
-    @shell.exec "git --git-dir=#{path}/.git tag"
+  def tags(dir)
+    @shell.exec "git --git-dir=#{dir}/.git tag"
   end
 end
