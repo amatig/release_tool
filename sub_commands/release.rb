@@ -8,13 +8,18 @@ class ReleaseSubcommand < Thor
 
   def list
     begin
+      dir = options[:dir]
       git = Git.new
 
-      list = git.tags options[:dir]
+      list = git.tags dir
       list = list.select { |tag| Common.is_valid_tag(tag) }
       list = list.sort { |tagA, tagB| Common.compare_versions(tagA, tagB) }
+      list = list.last options[:limit]
 
-      puts list.last options[:limit]
+      list.each do |tag|
+        commit, date = git.info(dir, tag)
+        puts tag + " | " + date
+      end
     rescue => error
       puts error
     end
