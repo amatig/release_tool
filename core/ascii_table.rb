@@ -1,5 +1,5 @@
 class ASCIITable
-  def initialize(data)
+  def initialize(data = {})
     @data = data
   end
 
@@ -17,7 +17,7 @@ class ASCIITable
       print_separator(column_widths)
     end
 
-    @data[:rows].each do |row|
+    @data[:rows]&.each do |row|
       print_row(column_widths, row)
     end
 
@@ -37,7 +37,7 @@ class ASCIITable
       end
     end
 
-    max_widths
+    max_widths.length == 0 ? [@data[:title]&.length || 0] : max_widths
   end
 
   def print_title(column_widths, value)
