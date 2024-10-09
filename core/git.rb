@@ -21,6 +21,6 @@ class Git
     date_element = output.find { |str| str.start_with?(date_prefix) }
     date = date_element.sub(date_prefix, "").strip
 
-    return commit, date.normalize_date
+    return { commit: commit, date: date.normalize_date }
   end
 end

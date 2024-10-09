@@ -12,17 +12,17 @@ class ReleaseSubcommand < Thor
       dir = options[:dir]
       git = Git.new
 
-      data = git.tags(dir: dir)
-      data = data.select { |tag| tag.is_valid_version }
-      data = data.sort { |tag_a, tag_b| tag_a.compare_versions(tag_b) }
-      data = data.last options[:limit]
-      data = data.map do |tag|
-        commit, date = git.info(dir: dir, tag: tag)
-        [tag, date]
+      list = git.tags(dir: dir)
+      list = list.select { |tag| tag.is_valid_version }
+      list = list.sort { |tag_a, tag_b| tag_a.compare_versions(tag_b) }
+      list = list.last options[:limit]
+      list = list.map do |tag|
+        info = git.info(dir: dir, tag: tag)
+        [tag, info[:date]]
       end
 
       # Output
-      table = ASCIITable.new(data.unshift(["Tag", "Date"]), has_header: true)
+      table = ASCIITable.new(headings: ["Tag", "Date"], rows: list)
       table.print_table
     rescue => error
       puts error

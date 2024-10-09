@@ -1,7 +1,6 @@
 class ASCIITable
-  def initialize(data, has_header: false)
+  def initialize(data)
     @data = data
-    @has_header = has_header
   end
 
   def print_table
@@ -9,13 +8,12 @@ class ASCIITable
 
     print_separator(column_widths)
 
-    if @has_header
-      first_row = @data.shift
-      print_row(column_widths, first_row)
+    if @data[:headings]
+      print_row(column_widths, @data[:headings])
       print_separator(column_widths)
     end
 
-    @data.each do |row|
+    @data[:rows].each do |row|
       print_row(column_widths, row)
     end
 
@@ -25,7 +23,11 @@ class ASCIITable
   def determine_column_widths
     max_widths = []
 
-    @data.each do |row|
+    @data[:headings]&.each_with_index do |value, index|
+      max_widths[index] = [max_widths[index] || 0, value.to_s.length].max
+    end
+
+    @data[:rows]&.each do |row|
       row.each_with_index do |value, index|
         max_widths[index] = [max_widths[index] || 0, value.to_s.length].max
       end
