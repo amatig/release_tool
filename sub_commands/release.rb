@@ -22,7 +22,7 @@ class ReleaseSubcommand < Thor
       end
 
       # Output
-      table = ASCIITable.new(headings: ["Tag", "Date"], rows: list)
+      table = ASCIITable.new(title: "List of the releases", headings: ["Tag", "Date"], rows: list)
       table.print_table
     rescue => error
       puts error

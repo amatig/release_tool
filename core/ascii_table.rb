@@ -6,6 +6,10 @@ class ASCIITable
   def print_table
     column_widths = determine_column_widths
 
+    if @data[:title]
+      print_title(column_widths, @data[:title])
+    end
+
     print_separator(column_widths)
 
     if @data[:headings]
@@ -34,6 +38,14 @@ class ASCIITable
     end
 
     max_widths
+  end
+
+  def print_title(column_widths, value)
+    internal_column_sum = column_widths.reduce(0) { |sum, size| sum + size + 2 }
+    total_sum = internal_column_sum + column_widths.length - 1
+
+    print_separator([total_sum - 2])
+    puts "|#{value.center(total_sum)}|"
   end
 
   def print_row(column_widths, values)
