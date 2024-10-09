@@ -45,7 +45,7 @@ class ASCIITable
     total_sum = internal_column_sum + column_widths.length - 1
 
     print_separator([total_sum - 2])
-    puts "|#{value.center(total_sum)}|"
+    puts "|#{value.center(total_sum).slice(0, total_sum)}|"
   end
 
   def print_row(column_widths, values)
