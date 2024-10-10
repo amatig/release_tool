@@ -9,7 +9,7 @@ class ASCIITable
     output = []
 
     if @data[:title]
-      output << printable_title(column_widths, @data[:title])
+      output << printable_top_table(column_widths, @data[:title])
     end
 
     output << printable_separator(column_widths)
@@ -44,14 +44,14 @@ class ASCIITable
     max_widths.length == 0 ? [@data[:title]&.length || 0] : max_widths
   end
 
-  def printable_title(column_widths, value)
-    internal_column_sum = column_widths.reduce(0) { |sum, size| sum + size + 2 }
-    total_sum = internal_column_sum + column_widths.length - 1
+  def printable_top_table(column_widths, title)
+    column_widths_sum = column_widths.reduce(0) { |sum, size| sum + size + 2 }
+    total_width = column_widths_sum + column_widths.length - 3
 
     output = []
 
-    output << printable_separator([total_sum - 2])
-    output << "|#{value.center(total_sum).slice(0, total_sum)}|"
+    output << printable_separator([total_width])
+    output << "| #{title.center(total_width).slice(0, total_width)} |"
 
     output
   end
