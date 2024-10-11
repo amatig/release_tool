@@ -4,7 +4,6 @@ require_relative "../core/git"
 
 class ReleaseSubcommand < Thor
   desc "list", "List of the releases"
-  option :dir, default: ".", aliases: "-d", desc: "Git repo directory"
   option :limit, type: :numeric, default: 10, aliases: "-l", desc: "Limit of the list length"
 
   def list
@@ -28,6 +27,20 @@ class ReleaseSubcommand < Thor
       end
 
       puts table
+    rescue => error
+      puts error
+    end
+  end
+
+  desc "info", "Release info (default is last)"
+  option :version, default: nil, aliases: "-v", desc: "Version (default is last)"
+
+  def info
+    begin
+      dir = options[:dir]
+      git = Git.new
+
+      puts "OK"
     rescue => error
       puts error
     end
