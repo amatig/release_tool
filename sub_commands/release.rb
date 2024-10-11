@@ -21,7 +21,13 @@ class ReleaseSubcommand < Thor
         [tag, info[:date]]
       end
 
-      puts ASCIITable.new(title: "List of the releases", headings: ["Tag", "Date"], rows: list)
+      table = ASCIITable.new do |t|
+        t.title = "List of the releases"
+        t.headings = ["Tag", "Date"]
+        t.rows = list
+      end
+
+      puts table
     rescue => error
       puts error
     end
