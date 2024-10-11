@@ -6,7 +6,11 @@ class Git
   end
 
   def tags(dir:)
-    @shell.exec "git --git-dir=#{dir}/.git tag"
+    output = @shell.exec "git --git-dir=#{dir}/.git tag"
+
+    output
+      .select { |tag| tag.is_valid_version }
+      .sort { |tag_a, tag_b| tag_a.compare_versions(tag_b) }
   end
 
   def info(dir:, tag:)
@@ -15,11 +19,15 @@ class Git
     commit_prefix = "commit"
     date_prefix = "Date:"
 
-    commit_element = output.find { |str| str.start_with?(commit_prefix) }
-    commit = commit_element.sub(commit_prefix, "").strip
+    commit = output
+      .find { |str| str.start_with?(commit_prefix) }
+      .sub(commit_prefix, "")
+      .strip
 
-    date_element = output.find { |str| str.start_with?(date_prefix) }
-    date = date_element.sub(date_prefix, "").strip
+    date = output
+      .find { |str| str.start_with?(date_prefix) }
+      .sub(date_prefix, "")
+      .strip
 
     { commit: commit, date: date.normalize_date }
   end

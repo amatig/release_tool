@@ -4,9 +4,15 @@ class Shell
   def exec(command)
     stdin, stdout, stderr, wait_thr = Open3.popen3 command
 
-    error = stderr.read.strip
+    error = stderr
+      .read
+      .strip
+
     raise error if !error.empty?
 
-    stdout.read.strip.split "\n"
+    stdout
+      .read
+      .strip
+      .split("\n")
   end
 end

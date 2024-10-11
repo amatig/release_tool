@@ -10,7 +10,7 @@ class String
   end
 
   def extract_version
-    match_found = match @@tag_regex
+    match_found = match(@@tag_regex)
     raise "Issue with tag version format" if match_found == nil || match_found.size < 4
 
     return match_found[1].to_i, match_found[2].to_i, match_found[3].to_i

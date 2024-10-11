@@ -51,10 +51,14 @@ class ASCIITable
     column_widths_sum = column_widths.reduce(0) { |sum, size| sum + size + 2 }
     total_width = column_widths_sum + column_widths.length - 3
 
-    output = []
-    output << printable_separator([total_width])
-    output << "| #{title.center(total_width).slice(0, total_width)} |"
-    output
+    formatted_title = title
+      .center(total_width)
+      .slice(0, total_width)
+
+    [
+      printable_separator([total_width]),
+      "| #{formatted_title} |",
+    ]
   end
 
   def printable_row(column_widths, values)
