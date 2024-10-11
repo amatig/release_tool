@@ -1,6 +1,12 @@
 class ASCIITable
-  def initialize(data = {})
-    @data = data
+  attr_accessor :title, :headings, :rows
+
+  def initialize(title: nil, headings: [], rows: [])
+    @title = title
+    @headings = headings
+    @rows = rows
+
+    yield(self) if block_given?
   end
 
   def to_s
@@ -8,18 +14,15 @@ class ASCIITable
 
     output = []
 
-    if @data[:title]
-      output << printable_top_table(column_widths, @data[:title])
-    end
-
+    output << printable_top_table(column_widths, @title) if @title
     output << printable_separator(column_widths)
 
-    if @data[:headings]
-      output << printable_row(column_widths, @data[:headings])
+    if !@headings.empty?
+      output << printable_row(column_widths, @headings)
       output << printable_separator(column_widths)
     end
 
-    @data[:rows]&.each do |row|
+    @rows.each do |row|
       output << printable_row(column_widths, row)
     end
 
@@ -31,17 +34,17 @@ class ASCIITable
   def determine_column_widths
     max_widths = []
 
-    @data[:headings]&.each_with_index do |value, index|
+    @headings.each_with_index do |value, index|
       max_widths[index] = [max_widths[index] || 0, value.to_s.length].max
     end
 
-    @data[:rows]&.each do |row|
+    @rows.each do |row|
       row.each_with_index do |value, index|
         max_widths[index] = [max_widths[index] || 0, value.to_s.length].max
       end
     end
 
-    max_widths.length == 0 ? [@data[:title]&.length || 0] : max_widths
+    !max_widths.empty? ? max_widths : [@title&.length || 0]
   end
 
   def printable_top_table(column_widths, title)
@@ -49,10 +52,8 @@ class ASCIITable
     total_width = column_widths_sum + column_widths.length - 3
 
     output = []
-
     output << printable_separator([total_width])
     output << "| #{title.center(total_width).slice(0, total_width)} |"
-
     output
   end
 
