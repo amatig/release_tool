@@ -31,4 +31,12 @@ class Git
 
     { commit: commit, date: date.normalize_date }
   end
+
+  def log(dir:, from:, to:, show_dates: false)
+    format = show_dates ? "%h %s, %ad" : "%h %s"
+    output = @shell.exec "git --git-dir=#{dir}/.git log #{from}..#{to} --merges --pretty='#{format}' --abbrev-commit"
+
+    output
+      .select { |str| str.is_valid_merge }
+  end
 end

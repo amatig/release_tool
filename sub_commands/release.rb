@@ -43,14 +43,28 @@ class ReleaseSubcommand < Thor
 
       tags = git.tags(dir: dir)
       tag = options[:version] || tags.last
+      prev_tag = tags.find_prev(tag)
       info = git.info(dir: dir, tag: tag)
+
+      full_info = [
+        ["Version", tag],
+        ["Commit", info[:commit]],
+        ["Date", info[:date]],
+        ["", ""],
+      ]
+
+      merges = git
+        .log(dir: dir, from: prev_tag, to: tag)
+        .each_with_index
+        .map { |merge, index| [index == 0 ? "Log #{prev_tag}..#{tag}" : "", merge] }
+
+      rows = full_info + merges
 
       table = ASCIITable.new do |t|
         t.title = "Release info"
-        t.rows = [["Version", tag], ["Commit", info[:commit]], ["Date", info[:date]]]
+        t.rows = rows
       end
 
-      puts tags.find_prev tag
       puts table
     rescue => error
       puts error
