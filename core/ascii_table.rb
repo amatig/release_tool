@@ -12,9 +12,8 @@ class ASCIITable
   def to_s
     column_widths = determine_column_widths
 
-    output = []
+    output = @title ? printable_top_table(column_widths, @title) : []
 
-    output << printable_top_table(column_widths, @title) if @title
     output << printable_separator(column_widths)
 
     if !@headings.empty?

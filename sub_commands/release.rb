@@ -50,7 +50,6 @@ class ReleaseSubcommand < Thor
         ["Version", tag],
         ["Commit", info[:commit]],
         ["Date", info[:date]],
-        ["", ""],
       ]
 
       merges = git
@@ -58,7 +57,7 @@ class ReleaseSubcommand < Thor
         .each_with_index
         .map { |merge, index| [index == 0 ? "Log #{prev_tag}..#{tag}" : "", merge] }
 
-      rows = full_info + merges
+      rows = full_info + [["", ""]] + merges
 
       table = ASCIITable.new do |t|
         t.title = "Release info"
