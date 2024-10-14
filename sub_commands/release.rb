@@ -24,7 +24,9 @@ class ReleaseSubcommand < Thor
       table = ASCIITable.new do |t|
         t.title = "List of the releases"
         t.headings = ["Tag", "Date"]
-        t.rows = rows
+        rows.each do |row|
+          t.add_row row
+        end
       end
 
       puts table
@@ -46,22 +48,20 @@ class ReleaseSubcommand < Thor
       prev_tag = tags.find_prev(tag)
       info = git.info(dir: dir, tag: tag)
 
-      full_info = [
-        ["Version", tag],
-        ["Commit", info[:commit]],
-        ["Date", info[:date]],
-      ]
-
       merges = git
         .log(dir: dir, from: prev_tag, to: tag)
         .each_with_index
         .map { |merge, index| [index == 0 ? "Log #{prev_tag}..#{tag}" : "", merge] }
 
-      rows = full_info + [["", ""]] + merges
-
       table = ASCIITable.new do |t|
         t.title = "Release info"
-        t.rows = rows
+        t.add_row ["Version", tag]
+        t.add_row ["Commit", info[:commit]]
+        t.add_row ["Date", info[:date]]
+        t.add_row :separator
+        merges.each do |merge|
+          t.add_row merge
+        end
       end
 
       puts table

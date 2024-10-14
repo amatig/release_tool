@@ -1,12 +1,28 @@
 class ASCIITable
-  attr_accessor :title, :headings, :rows
+  class Row
+    attr_accessor :items
 
-  def initialize(title: nil, headings: [], rows: [])
+    def initialize(items = [])
+      @items = items
+    end
+  end
+
+  class Separator < Row
+  end
+
+  attr_accessor :title, :headings
+
+  def initialize(title: nil, headings: [])
     @title = title
     @headings = headings
-    @rows = rows
+    @rows = []
 
     yield(self) if block_given?
+  end
+
+  def add_row(items)
+    row = items == :separator ? Separator.new : Row.new(items)
+    @rows << row
   end
 
   def to_s
@@ -17,7 +33,7 @@ class ASCIITable
     output << printable_separator(column_widths)
 
     if !@headings.empty?
-      output << printable_row(column_widths, @headings)
+      output << printable_row(column_widths, Row.new(@headings))
       output << printable_separator(column_widths)
     end
 
@@ -38,7 +54,7 @@ class ASCIITable
     end
 
     @rows.each do |row|
-      row.each_with_index do |value, index|
+      row.items.each_with_index do |value, index|
         max_widths[index] = [max_widths[index] || 0, value.to_s.length].max
       end
     end
@@ -60,8 +76,8 @@ class ASCIITable
     ]
   end
 
-  def printable_row(column_widths, values)
-    formatted_row = values.each_with_index.map do |value, index|
+  def printable_row(column_widths, row)
+    formatted_row = row.items.each_with_index.map do |value, index|
       value.to_s.ljust(column_widths[index])
     end
 
