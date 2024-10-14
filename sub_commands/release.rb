@@ -69,4 +69,29 @@ class ReleaseSubcommand < Thor
       puts error
     end
   end
+
+  desc "find", "Find release by ticket"
+  option :ticket, aliases: "-t", desc: "Ticket code"
+
+  def find
+    begin
+      dir = options[:dir]
+      git = Git.new
+
+      ticket = options[:ticket]
+      commit_hash = git.find_commit(dir: dir, ticket: ticket)
+      tag = git
+        .tags(dir: dir, contains: commit_hash)
+        .first
+
+      table = ASCIITable.new do |t|
+        t.title = "Find release"
+        t.add_row ["Ticket #{ticket} merged in #{tag}"]
+      end
+
+      puts table
+    rescue => error
+      puts error
+    end
+  end
 end

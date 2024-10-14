@@ -5,8 +5,13 @@ class Git
     @shell = Shell.new
   end
 
-  def tags(dir:)
-    output = @shell.exec "git --git-dir=#{dir}/.git tag"
+  def tags(dir:, contains: nil)
+    command = "git --git-dir=#{dir}/.git tag"
+    if contains
+      command += " --contains #{contains}"
+    end
+
+    output = @shell.exec command
 
     output
       .select { |tag| tag.is_valid_version }
@@ -34,9 +39,17 @@ class Git
 
   def log(dir:, from:, to:, show_dates: false)
     format = show_dates ? "%h %s, %ad" : "%h %s"
-    output = @shell.exec "git --git-dir=#{dir}/.git log #{from}..#{to} --merges --pretty='#{format}' --abbrev-commit"
+    output = @shell.exec "git --git-dir=#{dir}/.git log #{from}..#{to} --merges --pretty='#{format}'"
 
     output
       .select { |str| str.is_valid_merge }
+  end
+
+  def find_commit(dir:, ticket:)
+    output = @shell.exec "git --git-dir=#{dir}/.git log --grep='#{ticket}' --merges --pretty='%H'"
+
+    output
+      .last
+      .strip
   end
 end
