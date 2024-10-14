@@ -86,9 +86,8 @@ class ASCIITable
     column_widths_sum = column_widths.reduce(0) { |sum, size| sum + size + 2 }
     total_width = column_widths_sum + column_widths.length - 3
 
-    formatted_title = title
-      .center(total_width)
-      .slice(0, total_width)
+    formatted_title = total_width > 60 ? title.ljust(total_width) : title.center(total_width)
+    formatted_title = formatted_title.slice(0, total_width)
 
     [
       Separator.new.draw([total_width]),
