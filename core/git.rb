@@ -43,6 +43,8 @@ class Git
 
     output
       .select { |str| str.is_valid_merge }
+
+    show_dates ? output.map { |str| str.normalize_date } : output
   end
 
   def find_commit(dir:, ticket:)

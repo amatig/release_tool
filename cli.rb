@@ -7,7 +7,7 @@ require "thor"
 require_relative "sub_commands/release"
 
 class CLI < Thor
-  class_option :dir, default: ".", aliases: "-d", desc: "Git repo directory"
+  class_option :dir, default: ".", desc: "Git repo directory"
 
   desc "release", "Release commands"
   subcommand "release", ReleaseSubcommand

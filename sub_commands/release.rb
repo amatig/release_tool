@@ -5,7 +5,7 @@ require_relative "../core/git"
 
 class ReleaseSubcommand < Thor
   desc "list", "List of the releases"
-  option :limit, type: :numeric, default: 10, aliases: "-l", desc: "Limit of the list length"
+  option :limit, type: :numeric, default: 10, desc: "Max num of items"
 
   def list
     begin
@@ -35,8 +35,9 @@ class ReleaseSubcommand < Thor
     end
   end
 
-  desc "info", "Release info (default is last)"
-  option :version, default: nil, aliases: "-v", desc: "Version (default is last)"
+  desc "info", "Release info"
+  option :version, default: "last", desc: "Version"
+  option :show_dates, type: :boolean, default: false, desc: "Show dates"
 
   def info
     begin
@@ -44,12 +45,12 @@ class ReleaseSubcommand < Thor
       git = Git.new
 
       tags = git.tags(dir: dir)
-      tag = options[:version] || tags.last
+      tag = options[:version] == "last" ? tags.last : options[:version]
       prev_tag = tags.find_prev(tag)
       info = git.info(dir: dir, tag: tag)
 
       merges = git
-        .log(dir: dir, from: prev_tag, to: tag)
+        .log(dir: dir, from: prev_tag, to: tag, show_dates: options[:show_dates])
         .each_with_index
         .map { |merge, index| [index == 0 ? "Log #{prev_tag}..#{tag}" : "", merge] }
 
@@ -71,14 +72,15 @@ class ReleaseSubcommand < Thor
   end
 
   desc "find", "Find release by ticket"
-  option :ticket, aliases: "-t", desc: "Ticket code"
+  option :ticket, desc: "Ticket number"
 
   def find
     begin
+      ticket = options[:ticket] || ask("Enter the ticket number:")
+
       dir = options[:dir]
       git = Git.new
 
-      ticket = options[:ticket]
       commit_hash = git.find_commit(dir: dir, ticket: ticket)
       tag = git
         .tags(dir: dir, contains: commit_hash)
