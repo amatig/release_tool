@@ -80,8 +80,6 @@ class ASCIITable
     !max_widths.empty? ? max_widths : [@title&.length || 0]
   end
 
-  private
-
   def draw_top_table(column_widths, title)
     column_widths_sum = column_widths.reduce(0) { |sum, size| sum + size + 2 }
     total_width = column_widths_sum + column_widths.length - 3
