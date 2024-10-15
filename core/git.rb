@@ -41,7 +41,7 @@ class Git
     format = show_dates ? "%h %s, %ad" : "%h %s"
     output = @shell.exec "git --git-dir=#{dir}/.git log #{from}..#{to} --merges --pretty='#{format}'"
 
-    output
+    output = output
       .select { |str| str.is_valid_merge }
 
     show_dates ? output.map { |str| str.normalize_date } : output
