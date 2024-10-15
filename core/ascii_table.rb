@@ -46,18 +46,21 @@ class ASCIITable
 
     output = @title ? draw_top_table(column_widths, @title) : []
 
-    output << separator_output
-
     if !@headings.empty?
+      output << separator_output
       output << Row.new(@headings).draw(column_widths)
+    end
+
+    if !@rows.empty?
+      output << separator_output
+      @rows.each do |row|
+        output << row.draw(column_widths)
+      end
+    end
+
+    if !output.empty?
       output << separator_output
     end
-
-    @rows.each do |row|
-      output << row.draw(column_widths)
-    end
-
-    output << separator_output
 
     output.join("\n")
   end
