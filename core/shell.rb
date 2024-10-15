@@ -8,7 +8,7 @@ class Shell
       .read
       .strip
 
-    raise error if !error.empty?
+    raise error unless error.empty?
 
     stdout
       .read

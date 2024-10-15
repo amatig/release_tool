@@ -76,7 +76,11 @@ class ReleaseSubcommand < Thor
 
   def find
     begin
-      ticket = options[:ticket] || ask("Enter the ticket number:")
+      ticket = options[:ticket]
+
+      unless ticket
+        return help(:find)
+      end
 
       dir = options[:dir]
       git = Git.new
