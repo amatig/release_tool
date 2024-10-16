@@ -19,7 +19,8 @@ class Git
   end
 
   def info(dir:, tag:)
-    output = @shell.exec "git --git-dir=#{dir}/.git show #{tag} --quiet"
+    command = "git --git-dir=#{dir}/.git show #{tag} --quiet"
+    output = @shell.exec command
 
     commit_prefix = "commit"
     date_prefix = "Date:"
@@ -33,13 +34,15 @@ class Git
       .find { |str| str.start_with?(date_prefix) }
       .sub(date_prefix, "")
       .strip
+      .normalize_date
 
-    { commit: commit, date: date.normalize_date }
+    { commit: commit, date: date }
   end
 
   def log(dir:, from:, to:, show_dates: false)
     format = show_dates ? "%h %s, %ad" : "%h %s"
-    output = @shell.exec "git --git-dir=#{dir}/.git log #{from}..#{to} --merges --pretty='#{format}'"
+    command = "git --git-dir=#{dir}/.git log #{from}..#{to} --merges --pretty='#{format}'"
+    output = @shell.exec command
 
     output = output
       .select { |str| str.is_valid_merge }
@@ -48,7 +51,8 @@ class Git
   end
 
   def find_commit(dir:, ticket:)
-    output = @shell.exec "git --git-dir=#{dir}/.git log --grep='#{ticket}' --merges --pretty='%H'"
+    command = "git --git-dir=#{dir}/.git log --grep='#{ticket}' --merges --pretty='%H'"
+    output = @shell.exec command
 
     output
       .last
