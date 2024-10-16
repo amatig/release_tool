@@ -1,7 +1,7 @@
+require_relative "../core/git"
+require_relative "../core/ascii_table"
 require_relative "../extensions/string"
 require_relative "../extensions/array"
-require_relative "../core/ascii_table"
-require_relative "../core/git"
 
 class ReleaseSubcommand < Thor
   desc "list", "List of the releases"
